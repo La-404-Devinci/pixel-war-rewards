@@ -9,6 +9,10 @@ import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
 import { FXAAShader } from "three/addons/shaders/FXAAShader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
+const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
 const loader = new GLTFLoader();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -33,6 +37,7 @@ scene.add(podium);
 
 // Handle parallax effect (rotate the podium based on the mouse position)
 window.addEventListener("mousemove", (e) => {
+    if (isMobile()) return;
     const x = e.clientX - window.innerWidth / 2;
     const y = e.clientY - window.innerHeight / 2;
     podium.rotation.y = x * 0.0005;
@@ -187,5 +192,9 @@ composer.addPass(effectFXAA);
 function animate() {
     requestAnimationFrame(animate);
     composer.render();
+
+    if (isMobile()) {
+        podium.rotation.y += 0.0025;
+    }
 }
 animate();
